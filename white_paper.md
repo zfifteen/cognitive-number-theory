@@ -1,6 +1,6 @@
 # Curvature and Perception in Mathematics: A Computational Framework for Cognitive Number Theory
 
-**Authors:** Cognitive Number Theory Research Group  
+**Authors:** Dionisio Alberto Lopez III  
 **Date:** August 2025  
 **Version:** 1.0 (Draft)
 
