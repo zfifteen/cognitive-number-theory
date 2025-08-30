@@ -1,12 +1,12 @@
 # Curvature and Perception in Mathematics: A Computational Framework for Cognitive Number Theory
 
-**Authors:** Dionisio Alberto Lopez III  
+**Author:** Dionisio Alberto Lopez III  
 **Date:** August 2025  
 **Version:** 1.0 (Draft)
 
 ## Abstract
 
-This paper presents a novel computational framework for understanding cognitive distortions in mathematical number perception through a geometry-inspired curvature model. By drawing pedagogical analogies to relativistic space-time distortions, we introduce a forward diagnostic mapping that quantifies structural irregularities in discrete integer sequences. Our experimental results demonstrate that prime numbers exhibit minimal cognitive curvature, appearing as "geodesics" in the mathematical number space, while composite numbers show significantly higher curvature values. The framework includes empirical validation through machine learning classification experiments and provides both theoretical foundations and practical applications for understanding cognitive mathematical processing.
+This paper presents a novel computational framework for understanding cognitive distortions in mathematical number perception through a geometry-inspired curvature model. By drawing pedagogical analogies to relativistic space-time distortions, I introduce a forward diagnostic mapping that quantifies structural irregularities in discrete integer sequences. My experimental results demonstrate that prime numbers exhibit minimal cognitive curvature, appearing as "geodesics" in the mathematical number space, while composite numbers show significantly higher curvature values. The framework includes empirical validation through machine learning classification experiments and provides both theoretical foundations and practical applications for understanding cognitive mathematical processing.
 
 **Keywords:** cognitive mathematics, number theory, curvature models, prime classification, cognitive distortion
 
@@ -14,7 +14,7 @@ This paper presents a novel computational framework for understanding cognitive 
 
 The perception and processing of mathematical concepts by cognitive systems—whether human or artificial—often involves systematic distortions that reflect underlying structural complexities. Traditional number theory focuses on abstract mathematical properties, but the cognitive experience of working with numbers reveals patterns of difficulty, perception, and processing that suggest a deeper geometric structure to the mathematical landscape.
 
-This paper introduces a computational framework that models cognitive distortions in number perception using a curvature-based approach inspired by differential geometry. Our central hypothesis is that the perceived "difficulty" or "complexity" of mathematical numbers can be quantified through a curvature function that captures local geometric properties of the discrete number sequence.
+This paper introduces a computational framework that models cognitive distortions in number perception using a curvature-based approach inspired by differential geometry. My central hypothesis is that the perceived "difficulty" or "complexity" of mathematical numbers can be quantified through a curvature function that captures local geometric properties of the discrete number sequence.
 
 ### 1.1 Motivation
 
@@ -33,7 +33,7 @@ This work makes several key contributions:
 
 ### 2.1 Cognitive Curvature Function
 
-We define the cognitive curvature κ(n) for a positive integer n as:
+I define the cognitive curvature κ(n) for a positive integer n as:
 
 ```
 κ(n) = d(n) · ln(n) / e²
@@ -51,7 +51,7 @@ This function captures two key intuitions:
 
 ### 2.2 Cognitive Load and Frame Shift
 
-We model cognitive processing under varying load conditions through a subliminal frame shift parameter:
+I model cognitive processing under varying load conditions through a subliminal frame shift parameter:
 
 ```
 Δₛ = k · vᶜ(1 + load) · κ(n)
@@ -74,7 +74,7 @@ This exponential transformation amplifies the curvature effects, making structur
 
 ### 2.4 Z-Transformation for Normalization
 
-For diagnostic purposes, we define the Z-transformation to recover structural stability:
+For diagnostic purposes, I define the Z-transformation to recover structural stability:
 
 ```
 Z(n) = n / exp(v · κ(n))
@@ -86,7 +86,7 @@ This normalization reveals the underlying mathematical structure by compensating
 
 ### 3.1 Computational Setup
 
-Our experimental framework was implemented in Python using the following components:
+My experimental framework was implemented in Python using the following components:
 
 - **CognitiveModel Class**: Implements all mathematical transformations and curvature calculations
 - **Simulation Functions**: Generate experimental data across different cognitive load conditions
@@ -96,7 +96,7 @@ Our experimental framework was implemented in Python using the following compone
 
 ### 3.2 Experimental Parameters
 
-We conducted experiments with the following parameters:
+I conducted experiments with the following parameters:
 
 - **Number Range**: n = 2 to 50 (covering key primes and composites)
 - **Cognitive Load Levels**: 0.0 (baseline), 0.3 (moderate), 0.7 (high)
@@ -107,7 +107,7 @@ We conducted experiments with the following parameters:
 
 ### 3.3 Data Collection
 
-For each number n and load condition, we recorded:
+For each number n and load condition, I recorded:
 1. True Z-transformed value Z(n)
 2. Perceived value under cognitive load
 3. Distortion magnitude (perceived - actual)
@@ -117,7 +117,7 @@ For each number n and load condition, we recorded:
 
 ### 4.1 Data Visualization
 
-Our experimental framework generated comprehensive visualizations demonstrating the key relationships in cognitive number theory:
+My experimental framework generated comprehensive visualizations demonstrating the key relationships in cognitive number theory:
 
 #### Figure 1: Cognitive Curvature Distribution
 The curvature analysis plot (see `curvature_analysis.png`) reveals:
@@ -134,7 +134,7 @@ The load effects plot (see `load_effects.png`) demonstrates:
 
 ### 4.2 Curvature Distribution Analysis
 
-Our experimental results reveal distinct patterns in cognitive curvature across different number types:
+My experimental results reveal distinct patterns in cognitive curvature across different number types:
 
 #### Prime Numbers (n = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47)
 - **Count**: 15 numbers
@@ -158,7 +158,7 @@ Our experimental results reveal distinct patterns in cognitive curvature across 
 
 ### 4.3 Cognitive Load Effects
 
-Under increasing cognitive load, we observe systematic amplification of distortion effects:
+Under increasing cognitive load, I observe systematic amplification of distortion effects:
 
 #### Load = 0.0 (Baseline)
 - **Average Distortion**: 517.3
@@ -198,7 +198,7 @@ Under increasing cognitive load, we observe systematic amplification of distorti
 
 ### 4.5 Machine Learning Validation
 
-Our AI validation experiment using Random Forest classification yielded:
+My AI validation experiment using Random Forest classification yielded:
 
 - **Raw Features Accuracy**: 99.50%
 - **Z-Transformed Features Accuracy**: 77.50%  
@@ -230,7 +230,7 @@ This counterintuitive result suggests that the raw curvature features are alread
 
 ### 5.1 Theoretical Implications
 
-Our results support several important theoretical conclusions:
+My results support several important theoretical conclusions:
 
 #### 5.1.1 Prime Numbers as Cognitive Geodesics
 The consistently low curvature values for primes support the hypothesis that these numbers represent "minimal distortion paths" through mathematical space. This geometric interpretation provides a novel perspective on why primes feel cognitively fundamental.
@@ -308,7 +308,7 @@ This paper introduces a novel computational framework for understanding cognitiv
 
 The framework provides both theoretical insights into the geometric structure of mathematical cognition and practical tools for applications in education, algorithm design, and artificial intelligence. While limitations exist regarding parameter estimation and inverse transformation capabilities, the model offers a foundation for future research in cognitive number theory.
 
-Our work demonstrates that mathematical perception can be understood through geometric principles, opening new avenues for research at the intersection of mathematics, cognitive science, and computational modeling. The curvature-based approach provides a quantitative foundation for investigating how cognitive systems navigate the landscape of mathematical concepts.
+My work demonstrates that mathematical perception can be understood through geometric principles, opening new avenues for research at the intersection of mathematics, cognitive science, and computational modeling. The curvature-based approach provides a quantitative foundation for investigating how cognitive systems navigate the landscape of mathematical concepts.
 
 ## References
 
