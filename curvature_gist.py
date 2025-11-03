@@ -111,16 +111,23 @@ def run_analysis(max_n=50, v_param=1.0, n_bootstrap=1000, output_csv=True):
     Returns:
         Dictionary with analysis results
     """
+    # Constants
+    OUTPUT_FILENAME = 'kappas.csv'
+    
     # Generate data
     n_values = list(range(2, max_n + 1))
     kappas = [kappa(n) for n in n_values]
     z_values = [z_transform(n, v=v_param) for n in n_values]
     
-    # Separate primes and composites
-    primes = [n for n in n_values if is_prime(n)]
-    composites = [n for n in n_values if not is_prime(n) and n > 1]
-    prime_kappas = [kappa(n) for n in primes]
-    composite_kappas = [kappa(n) for n in composites]
+    # Pre-compute primality to avoid duplicate checks
+    primality_map = {n: is_prime(n) for n in n_values}
+    
+    # Separate primes and composites using pre-computed kappas
+    prime_indices = [i for i, n in enumerate(n_values) if primality_map[n]]
+    composite_indices = [i for i, n in enumerate(n_values) if not primality_map[n]]
+    
+    prime_kappas = [kappas[i] for i in prime_indices]
+    composite_kappas = [kappas[i] for i in composite_indices]
     
     # Calculate statistics
     avg_prime = np.mean(prime_kappas) if prime_kappas else 0.0
@@ -131,15 +138,15 @@ def run_analysis(max_n=50, v_param=1.0, n_bootstrap=1000, output_csv=True):
     ci_prime = bootstrap_ci(prime_kappas, n_resamples=n_bootstrap)
     ci_composite = bootstrap_ci(composite_kappas, n_resamples=n_bootstrap)
     
-    # Classification accuracy
+    # Classification accuracy using pre-computed kappas
     threshold = 1.5
     correct = 0
     total = len(n_values)
     
-    for n in n_values:
-        k = kappa(n)
+    for i, n in enumerate(n_values):
+        k = kappas[i]  # Use pre-computed value
         predicted = classify_by_curvature(k, threshold)
-        actual = 'prime' if is_prime(n) else 'composite'
+        actual = 'prime' if primality_map[n] else 'composite'
         if predicted == actual:
             correct += 1
     
@@ -148,13 +155,13 @@ def run_analysis(max_n=50, v_param=1.0, n_bootstrap=1000, output_csv=True):
     # Save to CSV if requested
     if output_csv:
         data = np.column_stack([n_values, kappas, z_values])
-        np.savetxt('kappas.csv', data, delimiter=',', 
+        np.savetxt(OUTPUT_FILENAME, data, delimiter=',', 
                    header='n,kappa,z_transform', comments='')
     
     results = {
         'n_range': (2, max_n),
-        'n_primes': len(primes),
-        'n_composites': len(composites),
+        'n_primes': len(prime_indices),
+        'n_composites': len(composite_indices),
         'avg_prime_kappa': avg_prime,
         'avg_composite_kappa': avg_composite,
         'ratio': ratio,
@@ -162,7 +169,8 @@ def run_analysis(max_n=50, v_param=1.0, n_bootstrap=1000, output_csv=True):
         'ci_composite': ci_composite,
         'classification_accuracy': accuracy,
         'classification_threshold': threshold,
-        'v_parameter': v_param
+        'v_parameter': v_param,
+        'output_filename': OUTPUT_FILENAME if output_csv else None
     }
     
     return results
@@ -194,7 +202,10 @@ def print_results(results):
     print(f"  - v = {results['v_parameter']}")
     
     print("\n" + "="*70)
-    print("Output saved to: kappas.csv")
+    if results.get('output_filename'):
+        print(f"Output saved to: {results['output_filename']}")
+    else:
+        print("CSV output was disabled")
     print("="*70 + "\n")
 
 
