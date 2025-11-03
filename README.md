@@ -62,19 +62,59 @@ These results demonstrate that primes appear as "minimal-curvature geodesics" wi
 ## Implementation
 
 * **Language**: Python 3
-* **Modules**:
+* **Main Scripts**:
 
-  * `divisor_density.py`: Efficient divisor-counting and curvature computation.
-  * `distortion_model.py`: Functions for $\Delta_n$, perceived values, and Z-transformation.
-  * `analysis.py`: Scripts to generate statistics, plots, and CSV exports.
+  * `main.py`: Full cognitive model simulation with visualization
+  * `curvature_gist.py`: **Self-contained gist** for curvature computation and classification
+  * `generate_plots.py`: Generate plots for white paper analysis
 
-### Example Usage
+### Quick Start with Self-Contained Gist
+
+The `curvature_gist.py` script provides a standalone implementation with **only numpy** as a dependency:
 
 ```bash
-python analysis.py --max-n 10000 --rate 1.0 --output results.csv
+# Basic usage (n = 2-50, default parameters)
+python curvature_gist.py
+
+# Extended analysis with 10,000 numbers
+python curvature_gist.py --max-n 10000
+
+# Custom v-parameter for Z-transformation
+python curvature_gist.py --max-n 1000 --v-param 0.5
+
+# Fewer bootstrap samples for faster execution
+python curvature_gist.py --max-n 100 --bootstrap-samples 500
 ```
 
-Generates curvature statistics and writes them to `results.csv`.
+**Key Features**:
+- Instant computation for custom n ranges
+- Built-in primality checks and bootstrap CI reporting
+- Extensible v-parameter tuning for Z-normalization
+- Outputs `kappas.csv` with (n, κ(n), Z(n)) data
+- ~83% classification accuracy for prime vs composite
+
+The gist can also be imported as a module:
+
+```python
+import curvature_gist as cg
+
+# Compute curvature for specific numbers
+print(cg.kappa(7))  # Prime: low curvature
+print(cg.kappa(12)) # Composite: high curvature
+
+# Run full analysis
+results = cg.run_analysis(max_n=100, v_param=1.0)
+cg.print_results(results)
+```
+
+### Full Model Example
+
+```bash
+# Run complete cognitive model with visualizations
+python main.py
+```
+
+Generates curvature statistics, distortion plots, and CSV exports.
 
 ## Limitations & Scope
 
