@@ -41,7 +41,11 @@ def create_kappa_histograms():
         composite_kappas = [cdl.kappa(c) for c in composites]
         
         # Create histograms
-        bins = np.linspace(0, max(max(prime_kappas), max(composite_kappas[:100])), 40)
+        # Use first 100 composites or all if fewer, to avoid outliers skewing bins
+        comp_sample = composite_kappas[:100] if len(composite_kappas) >= 100 else composite_kappas
+        max_kappa = max(max(prime_kappas) if prime_kappas else 0, 
+                       max(comp_sample) if comp_sample else 0)
+        bins = np.linspace(0, max_kappa, 40)
         
         ax.hist(prime_kappas, bins=bins, alpha=0.7, color='blue', 
                 label=f'Primes (n={len(primes)})', density=True)
@@ -293,8 +297,10 @@ def create_scale_comparison():
         primes = [n for n in numbers if cdl.is_prime(n)]
         composites = [n for n in numbers if not cdl.is_prime(n)]
         
-        prime_avg = np.mean([cdl.kappa(p) for p in primes]) if primes else 0
-        comp_avg = np.mean([cdl.kappa(c) for c in composites]) if composites else 0
+        prime_kappas_scale = [cdl.kappa(p) for p in primes]
+        comp_kappas_scale = [cdl.kappa(c) for c in composites]
+        prime_avg = np.mean(prime_kappas_scale) if prime_kappas_scale else np.nan
+        comp_avg = np.mean(comp_kappas_scale) if comp_kappas_scale else np.nan
         
         text = f'Primes: {len(primes)}\nComposites: {len(composites)}\n'
         text += f'Prime μ: {prime_avg:.2f}\nComp μ: {comp_avg:.2f}'

@@ -10,8 +10,8 @@ Tests core primitives:
 Run with: python3 test_cdl.py
 """
 
-import math
 import cdl
+import math
 
 
 class TestResults:
