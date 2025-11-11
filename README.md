@@ -70,41 +70,60 @@ These results demonstrate that primes appear as "minimal-curvature geodesics" wi
 
 ### Quick Start with Self-Contained Gist
 
-The `curvature_gist.py` script provides a standalone implementation with **only numpy** as a dependency:
+The `curvature_gist.py` script provides a standalone implementation with **numpy and sympy** as dependencies.
+
+**Validation Range**: All validation must occur within **[10^14, 10^18)** per project policy.
 
 ```bash
-# Basic usage (n = 2-50, default parameters)
+# Default usage (samples 500 numbers from [10^14, 10^14 + 10^6))
 python curvature_gist.py
 
-# Extended analysis with 10,000 numbers
-python curvature_gist.py --max-n 10000
+# Custom starting point within validation range
+python curvature_gist.py --min-n 100000000000000
 
-# Custom v-parameter for Z-transformation
-python curvature_gist.py --max-n 1000 --v-param 0.5
+# More samples for better statistics
+python curvature_gist.py --sample-count 1000
 
-# Fewer bootstrap samples for faster execution
-python curvature_gist.py --max-n 100 --bootstrap-samples 500
+# Wider sampling band
+python curvature_gist.py --sample-band 10000000
+
+# Custom v-parameter and threshold
+python curvature_gist.py --v-param 0.5 --threshold 1.0
 ```
 
 **Key Features**:
-- Instant computation for custom n ranges
+- Validation range enforcement: [10^14, 10^18) per project policy
 - Built-in primality checks and bootstrap CI reporting
 - Extensible v-parameter tuning for Z-normalization
-- Outputs `kappas.csv` with (n, κ(n), Z(n)) data
-- ~83% classification accuracy for prime vs composite
+- Tunable threshold for classification accuracy
+- Outputs `kappas.csv` with κ(n) values
+- Random sampling within allowed band for efficient validation
 
 The gist can also be imported as a module:
 
 ```python
+import numpy as np
+import random
 import curvature_gist as cg
 
-# Compute curvature for specific numbers
-print(cg.kappa(7))  # Prime: low curvature
-print(cg.kappa(12)) # Composite: high curvature
+# Validation range constants
+RANGE_MIN = cg.RANGE_MIN  # 10^14
+RANGE_MAX = cg.RANGE_MAX  # 10^18
 
-# Run full analysis
-results = cg.run_analysis(max_n=100, v_param=1.0)
-cg.print_results(results)
+# Sample numbers from validation range
+min_n = RANGE_MIN
+max_n = RANGE_MIN + 10**6
+xs = [random.randrange(min_n, max_n) for _ in range(500)]
+
+# Enforce validation range
+cg.enforce_validation_range(min_n, max_n)
+
+# Compute and classify
+kappas = [cg.kappa(i) for i in xs]
+classifications = [cg.classify_by_kappa(i, threshold=1.5) for i in xs]
+primes = [cg.is_prime(i) for i in xs]
+accuracy = np.mean(np.array(classifications) == np.array(primes))
+print(f"Accuracy: {accuracy:.4f}")
 ```
 
 ### Full Model Example
