@@ -3,23 +3,50 @@
 Self-contained Python snippet for κ(n) curvature computation with Z-transformation 
 and prime/composite classification, including bootstrap CI on accuracy for sequence diagnostics.
 
-This gist implements cognitive-number-theory's κ(n) curvature and Z(n) diagnostic transform,
-enabling 83% prime classification accuracy with minimal computation—advancing framework 
-features beyond prior QMC sampling or prediction gists.
+This gist implements cognitive-number-theory's κ(n) curvature and Z(n) diagnostic transform
+for validation within the range [10^14, 10^18) per project policy.
 
 Requirements:
     - numpy
     - sympy
 
 Usage:
-    python curvature_gist.py [--max-n MAX_N] [--v-param V] [--bootstrap-samples N]
+    python curvature_gist.py [--min-n MIN_N] [--sample-count N] [--v-param V] [--bootstrap-samples N]
     
 Example:
-    python curvature_gist.py --max-n 10000 --v-param 1.0 --bootstrap-samples 1000
+    python curvature_gist.py --min-n 100000000000000 --sample-count 500 --v-param 1.0 --bootstrap-samples 1000
 """
 
 import numpy as np
 import sympy as sp
+import random
+
+# Validation range constants (non-negotiable project policy)
+RANGE_MIN = 10**14
+RANGE_MAX = 10**18
+
+# Validation range constants (non-negotiable project policy)
+RANGE_MIN = 10**14
+RANGE_MAX = 10**18
+
+
+def enforce_validation_range(min_n: int, max_n: int) -> None:
+    """
+    Enforce that validation range is within [10^14, 10^18) per project policy.
+    
+    Args:
+        min_n: Minimum value in range
+        max_n: Maximum value in range
+        
+    Raises:
+        ValueError: If range is outside allowed bounds
+    """
+    if not (RANGE_MIN <= min_n < max_n <= RANGE_MAX):
+        raise ValueError(
+            f"Validation range must be within [{RANGE_MIN}, {RANGE_MAX}] "
+            "per project policy. "
+            f"Got: [{min_n}, {max_n}]"
+        )
 
 
 def kappa(n, base=np.e**2):
@@ -60,10 +87,15 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='κ(n) curvature computation with Z-transformation and prime/composite classification'
+        description='κ(n) curvature computation with Z-transformation and prime/composite classification. '
+                    'Validation range: [10^14, 10^18) per project policy.'
     )
-    parser.add_argument('--max-n', type=int, default=10000,
-                       help='Maximum value of n to analyze (default: 10000)')
+    parser.add_argument('--min-n', type=int, default=RANGE_MIN,
+                       help=f'Minimum value of n (default: {RANGE_MIN})')
+    parser.add_argument('--sample-count', type=int, default=500,
+                       help='Number of samples to draw from validation range (default: 500)')
+    parser.add_argument('--sample-band', type=int, default=10**6,
+                       help='Size of band to sample from [min-n, min-n + sample-band) (default: 10^6)')
     parser.add_argument('--v-param', type=float, default=1.0,
                        help='v-parameter for Z-transformation (default: 1.0)')
     parser.add_argument('--threshold', type=float, default=1.5,
@@ -73,30 +105,40 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
+    # Enforce validation range
+    max_n = args.min_n + args.sample_band
+    enforce_validation_range(args.min_n, max_n)
+    
     # Set random seed for reproducibility
     np.random.seed(42)
+    random.seed(42)
     
-    # Example usage for single number
-    n = 1000000
-    print(f"κ({n}): {kappa(n):.4f}")
-    print(f"Z({n}): {z_transform(n, v=args.v_param):.4f}")
+    # Example usage for single number (within validation range)
+    n_demo = RANGE_MIN + 1000000
+    print(f"κ({n_demo}): {kappa(n_demo):.4f}")
+    print(f"Z({n_demo}): {z_transform(n_demo, v=args.v_param):.4f}")
     print()
     
+    # Sample numbers from validation range
+    print(f"Sampling {args.sample_count} numbers from [{args.min_n}, {max_n})...")
+    seq = [random.randrange(args.min_n, max_n) for _ in range(args.sample_count)]
+    
     # Batch analysis
-    print(f"Running batch analysis for n=2-{args.max_n}...")
-    seq = np.arange(2, args.max_n + 1)
+    print(f"Running batch analysis on {len(seq)} samples...")
     kappas = [kappa(i) for i in seq]
     primes = [is_prime(i) for i in seq]
-    classifications = [classify_by_kappa(i, threshold=args.threshold) for i in seq]  # Tune threshold
+    classifications = [classify_by_kappa(i, threshold=args.threshold) for i in seq]
     accuracy = np.mean(np.array(classifications) == np.array(primes))
     print(f"Accuracy: {accuracy:.4f}")
     print()
     
-    # Bootstrap on batches (50 replicates of 1000-seq)
-    print("Running bootstrap analysis (50 replicates of 1000-seq)...")
+    # Bootstrap on batches (50 replicates)
+    print(f"Running bootstrap analysis (50 replicates of {min(500, len(seq))} samples each)...")
     accs = []
+    bootstrap_sample_size = min(500, len(seq))
     for _ in range(50):
-        sample = np.random.choice(seq, 1000)
+        sample_indices = np.random.choice(len(seq), bootstrap_sample_size, replace=True)
+        sample = [seq[i] for i in sample_indices]
         cls = [classify_by_kappa(i, args.threshold) for i in sample]
         true = [is_prime(i) for i in sample]
         accs.append(np.mean(np.array(cls) == np.array(true)))
@@ -112,11 +154,13 @@ if __name__ == "__main__":
     
     # Run plan
     print("# Run plan")
-    print("# Hypothesis: κ(n) classifies primes/composites at >80% accuracy for n=2-10^4; Δacc +5% with v=1.5 vs v=1.0.")
-    print("# Dataset: RSA-100 factors (p,q); seq=2-10^4")
-    print("# Metric: Mean accuracy; Δ% vs random; 95% bootstrap CI (1000 resamples)")
-    print("# Cmd: python this_gist.py")
+    print(f"# Validation range: [{RANGE_MIN}, {RANGE_MAX}] per project policy")
+    print(f"# Sampled {args.sample_count} numbers from [{args.min_n}, {max_n})")
+    print(f"# Threshold: {args.threshold}")
+    print("# Metric: Mean accuracy; 95% bootstrap CI (1000 resamples)")
+    print("# Cmd: python curvature_gist.py")
     print("# Artifacts: kappas.csv (np.savetxt('kappas.csv', kappas))")
     print()
     print(f"Results: Accuracy={accuracy:.4f}, 95% CI={ci}")
+
 
