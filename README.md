@@ -70,41 +70,50 @@ These results demonstrate that primes appear as "minimal-curvature geodesics" wi
 
 ### Quick Start with Self-Contained Gist
 
-The `curvature_gist.py` script provides a standalone implementation with **only numpy** as a dependency:
+The `curvature_gist.py` script provides a standalone implementation with **numpy and sympy** as dependencies:
 
 ```bash
-# Basic usage (n = 2-50, default parameters)
+# Default usage (n = 2-10000, threshold=1.5)
 python curvature_gist.py
 
-# Extended analysis with 10,000 numbers
-python curvature_gist.py --max-n 10000
+# Smaller dataset for faster execution
+python curvature_gist.py --max-n 1000
 
 # Custom v-parameter for Z-transformation
 python curvature_gist.py --max-n 1000 --v-param 0.5
 
-# Fewer bootstrap samples for faster execution
-python curvature_gist.py --max-n 100 --bootstrap-samples 500
+# Custom threshold for classification
+python curvature_gist.py --max-n 5000 --threshold 1.0
+
+# Control bootstrap samples
+python curvature_gist.py --max-n 10000 --bootstrap-samples 500
 ```
 
 **Key Features**:
 - Instant computation for custom n ranges
 - Built-in primality checks and bootstrap CI reporting
 - Extensible v-parameter tuning for Z-normalization
-- Outputs `kappas.csv` with (n, κ(n), Z(n)) data
-- ~83% classification accuracy for prime vs composite
+- Tunable threshold for classification accuracy
+- Outputs `kappas.csv` with κ(n) values
+- ~88% classification accuracy for n=2-10000 with threshold=1.5
 
 The gist can also be imported as a module:
 
 ```python
+import numpy as np
 import curvature_gist as cg
 
 # Compute curvature for specific numbers
-print(cg.kappa(7))  # Prime: low curvature
-print(cg.kappa(12)) # Composite: high curvature
+print(cg.kappa(7))   # Prime: low curvature
+print(cg.kappa(12))  # Composite: high curvature
 
-# Run full analysis
-results = cg.run_analysis(max_n=100, v_param=1.0)
-cg.print_results(results)
+# Batch analysis example
+seq = np.arange(2, 1001)
+kappas = [cg.kappa(i) for i in seq]
+classifications = [cg.classify_by_kappa(i, threshold=1.5) for i in seq]
+primes = [cg.is_prime(i) for i in seq]
+accuracy = np.mean(np.array(classifications) == np.array(primes))
+print(f"Accuracy: {accuracy:.4f}")
 ```
 
 ### Full Model Example
