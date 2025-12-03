@@ -35,6 +35,7 @@ def prime_diagnostic_prefilter(candidates: np.ndarray, threshold: float = 1.5) -
 
 def bootstrap_accuracy(preds: np.ndarray, truths: np.ndarray, n_boot: int = 1000) -> tuple:
     """95% CI for accuracy %."""
+    np.random.seed(42)  # For reproducibility
     accs = []
     for _ in range(n_boot):
         idx = np.random.choice(len(preds), len(preds), replace=True)
